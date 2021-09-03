@@ -1,5 +1,4 @@
-import discord
-import string
+import discord, string, json, os
 from discord.ext import commands
 from attendance import get_missing_hits
 from editfile import get_dict, update_dict, delete_item, list_names
@@ -13,6 +12,8 @@ help_command = commands.DefaultHelpCommand(
 client = commands.Bot(command_prefix='$', intents=intents)
 testrole = 870501755987841115
 permitted_roles = [741525875572342784, 765081696675823646, 750100932594892917, 742144292193173656, testrole]
+dir_path = os.path.dirname(os.path.realpath(__file__))
+token = json.load(open(dir_path + "\\config.json"))['token']
 
 @client.event
 async def on_ready():
@@ -23,26 +24,6 @@ async def on_message(message):
     if message.author.id == client.user.id:
         return
     update(message.author.name, string.capwords(message.content))
-    '''
-    msg_content = message.content.lower()
-    if "alef" == msg_content:
-        await message.reply("Bad", mention_author=False)
-    elif "rael" == msg_content:
-        await message.channel.send("Rael is a robot")
-    elif "praise" == msg_content:
-        await message.channel.send("Praise is a beer drinking human")
-    if "aco" in msg_content and "taylor" in msg_content:
-        emoji = discord.utils.get(client.emojis, name="dogDance")
-        await message.add_reaction(emoji)
-        emoji = discord.utils.get(client.emojis, name='pathetic')
-        await message.add_reaction(emoji)
-    elif "aco" in msg_content:
-        emoji = discord.utils.get(client.emojis, name="dogDance")
-        await message.add_reaction(emoji)
-    elif "taylor" in msg_content:
-        emoji = discord.utils.get(client.emojis, name='pathetic')
-        await message.add_reaction(emoji)
-    '''
     await client.process_commands(message)
 
 @client.command(brief='Top words you have spoken!',
@@ -134,7 +115,6 @@ async def get_pings(ctx):
         await ctx.send(ctx.message.author.mention + ' You do not have permissions to use this command')
         return
     spreadsheet_to_discord = get_dict()
-    print(spreadsheet_to_discord)
     msg = await ctx.send('Getting pings...')
     members = get_missing_hits()
     discord_ids = [spreadsheet_to_discord.get(name) for name in members if spreadsheet_to_discord.get(name) != 0]
@@ -181,4 +161,4 @@ async def delete_error(ctx, error):
                 aliases=['List'])
 async def list(ctx):
     await ctx.send('\n'.join(list_names()))
-client.run('ODY5NzY4MTIzNjMxNDI3NjM1.YQDAsA.pNurcG9yEQsGzAo1zHFYQEICRYo')
+client.run(token)
