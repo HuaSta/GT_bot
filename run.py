@@ -1,7 +1,6 @@
-import discord, json, os
+import discord, json
 from botClass import botClient
 from botCommands import *
-from botCommands.spreadsheet import SpreadSheet
 
 ADMIN_ROLES = [741525875572342784, 765081696675823646, 750100932594892917,
                  742144292193173656, 870501755987841115]
